@@ -436,66 +436,74 @@ function runStart() {
     drawText(ctx, 'change your guy', 440, 140, 22);
 }
 
+function update() {
+    ctx.fillStyle = checkDiff();
+    ctx.fillRect(0,0,canv.width,canv.height);  //Background Screen
+    cont++;
+    if (musicOn) apuro.play(); else apuro.pause();
 
-//Playing the game
-function runGame() 
-{
-	now = window.performance.now();
-  	dt = dt + Math.min(1, (now - last) / 1000);    // duration in seconds
-  	if(dt > step) {
-    	dt = dt - step;
+    if (!stop) {  //jugando
+        if (!yaTa && (points == 110 || points == 211 || points == 315 || points == 433 || points == 651 || points == 820 || points == 922)) {
+            cont = 0;
+            stop = true;
+        }
+        if (isTouchingCoin()) moveCoin();
+        if (isTouchingEnemy() && points >= 360) timer = 0;
+        
+        if (cont >= 60) {
+            timer--;
+            cont = 0;
+        }
+    }else{    //click click click!! 
+        yaTa = true;
+        
+        if (cont >= 126) {
+            cont = 0;
+            stop = false;
+        }
+    }
+}
 
-	    ctx.fillStyle = checkDiff();
-		ctx.fillRect(0,0,canv.width,canv.height);  //Background Screen
-		cont++;
-		if (musicOn) apuro.play(); else apuro.pause();
-
-	    if (!stop) {  //jugando
-	        if (!yaTa && (points == 110 || points == 211 || points == 315 || points == 433 || points == 651 || points == 820 || points == 922)) {
-	            cont = 0;
-	            stop = true;
-	        }
-	        if (isTouchingCoin()) moveCoin();
-	        if (isTouchingEnemy() && points >= 360) timer = 0;
-	        
-	        if (cont >= 60) {
-	            timer--;
-	            cont = 0;
-	        }
-	    }else{    //click click click!! 
-	        yaTa = true;
-	        
-	        if (cont >= 126) {
-	            cont = 0;
-	            stop = false;
-	        }
-	    }
-	}
-
-	drawTheHero(ctx);                           
+function draw() {
+   drawTheHero(ctx);                           
     drawText(ctx,'Points: ' + points,10,canv.height-15, 30);
     drawText(ctx, 'Time: ' + timer,canv.width-115,canv.height-15, 30);
     if (!stop) {
-    	drawCoin(ctx);                              
+        drawCoin(ctx);                              
         drawEnemy(ctx);       
         if (reloj >= dificultad) {
             drawClock(ctx);
             if (isTouchingClock()) moveClock();
         }
     } else {
-    	ctx.drawImage(space, 240, 360, 120, 30);
+        ctx.drawImage(space, 240, 360, 120, 30);
         drawText(ctx, 'ASD ASD ASD ASD!!!', 185, 345, 30);
-    }
+    } 
+}
 
+function lose() {
+    canv.style.cursor = "default";
+    apuro.pause();
+    if (soundOn) fin.play();
+    window.cancelAnimationFrame(gameInterval);
+    runEnd();
+}
+
+//Playing the game
+function runGame() 
+{
+	now = window.performance.now();
+  	dt = dt + Math.min(1, (now - last) / 1000);
+  	if(dt > step) {      //making sure logic goes 60fps
+    	dt = dt - step;
+        update();
+	}
+    draw();             //but drawing as fast as it cans
     last = now;
     gameInterval = requestAnimationFrame(runGame);
 
-    if (timer <= 0) { //PERDIÓ
-        canv.style.cursor = "default";
-        apuro.pause();
-        if (soundOn) fin.play();
-        window.cancelAnimationFrame(gameInterval);
-        runEnd();
+    if (timer <= 0) { //LOSED!
+        lose();
     }
 }
 
