@@ -282,7 +282,7 @@ function canvasMove(E) {  //Get mouse X,Y
     heroX = E.clientX - rect.left;
     heroY = E.clientY - rect.top;
     if (!jugando && inTheMenu) {
-        if (E.pageX >= 431 && E.pageX <= 600 && E.pageY >= 212 && E.pageY <= 280) {
+        if (heroX >= 431 && heroX <= 600 && heroY >= 212 && heroY <= 280) {
             canv.style.cursor = 'pointer';
         } else {
             canv.style.cursor = 'default';
@@ -297,7 +297,7 @@ function clickeado(E) {  //Click for return to the startScreen.
         coinY = 157;
         runStart();
     } else if (!jugando && inTheMenu) {
-        if (E.pageX >= 431 && E.pageX <= 600 && E.pageY >= 212 && E.pageY <= 280) {
+        if (heroX >= 431 && heroX <= 600 && heroY >= 212 && heroY <= 280) {
             window.open('https://github.com/valentinoConti','_top');
         }
     }
