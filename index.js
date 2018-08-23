@@ -109,39 +109,39 @@ function checkDiff() {
         return "#c8cbd1";
     } else
     if (points >= 25 && points < 50) {
-        return "#b6bbc4";
+    	return "#b6bbc4";
     } else
     if (points >= 50 && points < 75) {
-        return "#9da3ad";
+    	return "#9da3ad";
     } else
     if (points >= 75 && points < 100) {
         if (points == 75) dificultad = 7;
         return "#8e95a0";
     } else
     if (points >= 100 && points < 150) {
-        return "#78808c";
+    	return "#78808c";
     } else
     if (points >= 150 && points < 200) { 
-        return "#6b7482";
+    	return "#6b7482";
     } else
     if (points >= 200 && points < 250) {
         texto = 'Mouse enthusiast';
-        return "#535e70"; 
+    	return "#535e70"; 
     } else
     if (points >= 250 && points < 300) {
         if (points == 250) dificultad = 8;
-        return "#475770";
+    	return "#475770";
     } else
     if (points >= 300 && points < 350) {
-        return "#3a4c68";
+    	return "#3a4c68";
     } else
     if (points >= 350 && points < 400) {
-        return "#2c3e5b";
+    	return "#2c3e5b";
     }
     if (points >= 400 && points < 500) {
         texto = 'Mouse addict';
         sounds[5].playbackRate = 1.2
-        return "#233451"; 
+    	return "#233451"; 
     } else
     if (points >= 500 && points < 600) {
         if (rapido) {
@@ -150,42 +150,42 @@ function checkDiff() {
             enemySpeedY = enemySpeedY*1.4;
         }
         sounds[5].playbackRate = 1.4
-        return "#192a47";
+    	return "#192a47";
     } else
     if (points >= 600 && points < 700) {
         rapido = true;
         texto = 'Mouse professional';
         sounds[5].playbackRate = 1.6
-        return "#122442"; 
+    	return "#122442"; 
     } else
     if (points >= 700 && points < 750) {
-        if (rapido) {
+    	if (rapido) {
             rapido = false;
             dificultad = 9; 
             enemySpeedX = enemySpeedX*1.4; 
             enemySpeedY = enemySpeedY*1.4; 
         }
-        return "#0a1d3a";
+    	return "#0a1d3a";
     } else
     if (points >= 750 && points < 800) {
         sounds[5].playbackRate = 1.8
-        return "#0a1d3a";
+    	return "#0a1d3a";
     } else
     if (points >= 800 && points < 850) {
         texto = 'You are a legend';
-        return "#021430"; 
+    	return "#021430"; 
     } else
     if (points >= 850 && points < 900) {
         if (points == 850) dificultad = 10;
         sounds[5].playbackRate = 2
-        return "#021430";  
+    	return "#021430";  
     } else
     if (points >= 900 && points < 1000){
         if (points == 915) dificultad = 11;
         texto = 'SAVAGE. You just won';
-        return "#ff33cc";  
+    	return "#ff33cc";  
     } else {
-        return "#f442b9";
+    	return "#f442b9";
     }
 }
 
@@ -243,7 +243,7 @@ function caraa() {   //changing player function
             img = images[17];
             break;
         case 5:
-            img = images[18];
+        	img = images[18];
         }
 }
 
@@ -339,9 +339,14 @@ function keyPush(E) {   //Keyboard input
 
     if (E.keyCode == 13) {   //Key ENTER: StartPlaying
         if (!jugando) {
-            if (cara != 5) canv.style.cursor = 'none';
+        	if (cara != 5) canv.style.cursor = 'none';
             points = 0;
             inTheMenu = false;
+            ctx.shadowBlur=5;
+            ctx.shadowOffsetX=-1;
+            ctx.shadowOffsetY=2;
+			ctx.shadowColor='#000000';
+
             gameInterval = requestAnimationFrame(runGame);
             jugando = true;
         }
@@ -380,12 +385,12 @@ function startLoading() {
     }
 
     function preloadAUD() {
-        var i, 
+        var i,
         d = 0, 
         totalito = preloadAUD.arguments.length;
         for (i = 0; i < totalito; i++) {
             sounds[i] = document.createElement('audio');
-            sounds[i].oncanplay = function(){
+            sounds[i].oncanplaythrough = function(){
                 d++;
                 if (d == totalito) {
                     soundsLoaded = true;
@@ -432,7 +437,17 @@ function hasLoaded(){
         sounds[3].volume = 0.5;
         sounds[4].volume = 0.5;
         sounds[5].volume = 0.1;
-        canv = document.getElementById("GraphicsBox");
+        canv = document.createElement("canvas");
+        canv.width = 600;
+        canv.height = 400;
+        canv.oncontextmenu = 'return false';
+        canv.style.borderColor = 'black';
+        canv.style.position = 'relative';
+        canv.style.left = '0px';
+        canv.style.top = '0px';
+        canv.style.borderStyle = 'solid';
+        canv.style.borderWidth = '2px';
+        document.body.appendChild(canv);
         ctx = canv.getContext("2d");
         //First clock position
         clockX = (Math.random() * (canv.width-60))+30;
@@ -448,7 +463,7 @@ function hasLoaded(){
 
 //Start screen
 function runStart() {
-    canv.style.cursor = 'default';
+	canv.style.cursor = 'default';
     inTheMenu = true;
     ctx.fillStyle = "#9da3ad";
     ctx.fillRect(0,0,canv.width,canv.height);
@@ -533,6 +548,9 @@ function draw() {
 }
 
 function lose() {
+	ctx.shadowBlur=0;
+	ctx.shadowOffsetX=0;
+    ctx.shadowOffsetY=0;
     canv.style.cursor = "default";
     sounds[5].pause();
     if (soundOn) sounds[4].play();
@@ -543,12 +561,12 @@ function lose() {
 //Playing the game
 function runGame() 
 {
-    now = window.performance.now();
-    dt = dt + Math.min(1, (now - last) / 1000);
-    if(dt > step) {      //making sure logic goes 60fps
-        dt = dt - step;
+	now = window.performance.now();
+  	dt = dt + Math.min(1, (now - last) / 1000);
+  	if(dt > step) {      //making sure logic goes 60fps
+    	dt = dt - step;
         update();
-    }
+	}
     draw();             //but drawing as fast as it cans
     last = now;
     gameInterval = requestAnimationFrame(runGame);
@@ -581,6 +599,6 @@ function runEnd()
     reloj = 0;
     rapido = true;
     dificultad = 6;
-    enemySpeedX = 2;
-    enemySpeedY = 2;
+	enemySpeedX = 2;
+	enemySpeedY = 2;
 }
